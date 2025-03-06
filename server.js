@@ -1,13 +1,15 @@
 const express=require('express')
 const mongoose=require('mongoose')
+const cors = require('cors');
 require('dotenv').config()
 const User=require('./models/User')
 const bcrypt=require('bcryptjs')
-const Recipe=require('./models/Recipe')
+const RecipesModel=require('./models/Recipe')
 
 const app=express()
 const PORT=3500
 app.use(express.json());
+app.use(cors());
 
 //Home page api
 app.get('/home',(req, res)=>{
@@ -54,7 +56,7 @@ app.post('/login',async(req,res)=>{
 app.post('/createrecipe',async(req,res)=>{
     const{Name,Description,Ingredients,Instruction,ImageURL,CookingTime}=req.body
     try{
-        const CreateRecipe=new Recipe({Name,Description,Ingredients,Instruction,ImageURL,CookingTime})
+        const CreateRecipe=new RecipesModel({Name,Description,Ingredients,Instruction,ImageURL,CookingTime})
         await CreateRecipe.save()
         res.json({message: "Recipe Created.."})
         console.log("Recipe Creation completed...")
@@ -77,4 +79,8 @@ app.listen(PORT,(err)=>{
         console.log(err)
     }
     console.log("Server is running on port :"+PORT)
+})
+
+app.get('/',(req,res)=>{
+    res.send("Working");
 })
